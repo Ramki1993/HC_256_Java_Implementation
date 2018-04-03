@@ -2,11 +2,11 @@
 package com.hc_256;
 
 public class Main {
-
+	static long data[] = new long[16];
 	public static void main(String[] args) {
 		long key[] = new long[8];
 		long iv[] = new long [8];
-		long data[] = new long[16];
+
 		double duration, speed;
 		long i;
 		for( i = 0; i < 8; i++) {
@@ -20,10 +20,14 @@ public class Main {
 		for(i = 0; i < 16; i++) {
 			data[(int)i] = 0;
 		}
-		cipher.encrypt(data);
-
+		long encData[] = new long[16]; 
+		encData = cipher.encrypt(data);
+		for(i = 0; i < 16; i++) {
+			System.out.print(Long.toHexString(cipher.u32(encData[(int) i])));
+			System.out.println("");
+		}
 		long start = System.nanoTime();
-		for(i = 0; i < 67108864; i++) {
+		for(i = 0; i < 0x4000000; i++) {
 			cipher.encrypt(data);	
 		}
 		long finish = System.nanoTime();
