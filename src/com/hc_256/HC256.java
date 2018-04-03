@@ -10,6 +10,104 @@ public class HC256 {
 		
 	}
 
+	public long h1(long x, long y){
+		short a,b,c,d;
+		a = u8((short)x);
+
+		b = u8((short)(x >> 8));
+
+		c = u8((short)(x >> 16));
+
+		d = u8((short)(x >> 24));
+
+		y = Q[a]+Q[256+b]+Q[512+c]+Q[768+d];
+		return y;
+	}
+	public long h2(long x, long y){
+		short a,b,c,d;
+		a = u8((short)x);
+
+		b = u8((short)(x >> 8));
+
+		c = u8((short)(x >> 16));
+
+		d = u8((short)(x >> 24));
+
+		y = P[a] + P[256+b] + P[512 + c] + P[768+d];
+		return y;
+	}
+	public long step_A(long u, long v, long a, long b, long c, long d, long m) {
+		long tem0, tem1, tem2, tem3 = 0;
+		tem0 = rotr(v,23);
+		tem1 = rotr(c,10);
+		tem2 = ((v ^ c) & 0x3ff) ;
+
+		u += b + (tem0^tem1) + Q[(int)tem2];
+		a = u;
+		h1(d,tem3);
+		m ^= tem3 ^ u;
+		return m;
+		
+	}
+	public long step_B(long u, long v, long a, long b, long c, long d, long m) {
+		long tem0, tem1, tem2, tem3 = 0;
+		tem0 = rotr(v,23);
+		tem1 = rotr(c,10);
+		tem2 = ((v ^ c) & 0x3ff) & 0xffffffff;//0xffffffff should give us the u32 value;
+
+		u += b + (tem0^tem1) + P[(int)tem2];
+		a = u;
+		h2(d,tem3);
+		m ^= tem3 ^ u;
+		return m;
+		
+	}
+	void encrypt(long data[]) { //each time it encrypts 512-bit data
+		long cc,dd; 
+		cc = (counter2048 & 0x3ff); 
+		dd = ((cc+16)&0x3ff);
+		if (counter2048 < 1024) {
+			counter2048 = (counter2048 + 16) & 0x7ff; 
+			step_A(P[(int)(cc)], P[(int)(cc+1)], X[0], X[6], X[13],X[4], data[0]);
+			step_A(P[(int)(cc+1)], P[(int)(cc+2)], X[1], X[7], X[14],X[5], data[1]);
+			step_A(P[(int)(cc+2)], P[(int)(cc+3)], X[2], X[8], X[15],X[6], data[2]);
+			step_A(P[(int)(cc+3)], P[(int)(cc+4)], X[3], X[9], X[0], X[7], data[3]); 
+			step_A(P[(int)(cc+4)], P[(int)(cc+5)], X[4], X[10],X[1], X[8], data[4]);
+			step_A(P[(int)(cc+5)], P[(int)(cc+6)], X[5], X[11],X[2], X[9], data[5]);
+			step_A(P[(int)(cc+6)], P[(int)(cc+7)], X[6], X[12],X[3], X[10],data[6]); 
+			step_A(P[(int)(cc+7)], P[(int)(cc+8)], X[7], X[13],X[4], X[11],data[7]); 
+			step_A(P[(int)(cc+8)], P[(int)(cc+9)], X[8], X[14],X[5], X[12],data[8]); 
+			step_A(P[(int)(cc+9)], P[(int)(cc+10)],X[9], X[15],X[6], X[13],data[9]); 
+			step_A(P[(int)(cc+10)],P[(int)(cc+11)],X[10],X[0], X[7], X[14],data[10]);
+			step_A(P[(int)(cc+11)],P[(int)(cc+12)],X[11],X[1], X[8], X[15],data[11]);
+			step_A(P[(int)(cc+12)],P[(int)(cc+13)],X[12],X[2], X[9], X[0], data[12]); 
+			step_A(P[(int)(cc+13)],P[(int)(cc+14)],X[13],X[3], X[10],X[1], data[13]);
+			step_A(P[(int)(cc+14)],P[(int)(cc+15)],X[14],X[4], X[11],X[2], data[14]); 
+			step_A(P[(int)(cc+15)],P[(int)(dd)], X[15],X[5], X[12],X[3], data[15]);
+		}
+		else {
+			counter2048 = (counter2048 + 16) & 0x7ff; 
+			step_B(Q[(int)(cc)], Q[(int)(cc+1)], Y[0], Y[6], Y[13],Y[4], data[0]); 
+			step_B(Q[(int)(cc+1)], Q[(int)(cc+2)], Y[1], Y[7], Y[14],Y[5], data[1]); 
+			step_B(Q[(int)(cc+2)], Q[(int)(cc+3)], Y[2], Y[8], Y[15],Y[6], data[2]); 
+			step_B(Q[(int)(cc+3)], Q[(int)(cc+4)], Y[3], Y[9], Y[0], Y[7], data[3]);
+			step_B(Q[(int)(cc+4)], Q[(int)(cc+5)], Y[4], Y[10],Y[1], Y[8], data[4]); 
+			step_B(Q[(int)(cc+5)], Q[(int)(cc+6)], Y[5], Y[11],Y[2], Y[9], data[5]);
+			step_B(Q[(int)(cc+6)], Q[(int)(cc+7)], Y[6], Y[12],Y[3], Y[10],data[6]);
+			step_B(Q[(int)(cc+7)], Q[(int)(cc+8)], Y[7], Y[13],Y[4], Y[11],data[7]); 
+			step_B(Q[(int)(cc+8)], Q[(int)(cc+9)], Y[8], Y[14],Y[5], Y[12],data[8]); 
+			step_B(Q[(int)(cc+9)], Q[(int)(cc+10)],Y[9], Y[15],Y[6], Y[13],data[9]); 
+			step_B(Q[(int)(cc+10)],Q[(int)(cc+11)],Y[10],Y[0], Y[7], Y[14],data[10]); 
+			step_B(Q[(int)(cc+11)],Q[(int)(cc+12)],Y[11],Y[1], Y[8], Y[15],data[11]); 
+			step_B(Q[(int)(cc+12)],Q[(int)(cc+13)],Y[12],Y[2], Y[9], Y[0], data[12]);
+			step_B(Q[(int)(cc+13)],Q[(int)(cc+14)],Y[13],Y[3], Y[10],Y[1], data[13]); 
+			step_B(Q[(int)(cc+14)],Q[(int)(cc+15)],Y[14],Y[4], Y[11],Y[2], data[14]);
+			step_B(Q[(int)(cc+15)],Q[(int)(dd)], Y[15],Y[5], Y[12],Y[3], data[15]);
+		
+		}
+	}
+
+
 	public void initialization(long key[], long iv[])
 	{
 		int i,j;
@@ -19,7 +117,7 @@ public class HC256 {
 		for(i = 8; i < 16; i++) P[i] = iv[i-8];
 		
 		for(i=16; i < 528; i++)
-			P[i] = f(P[i-2],P[i-7],P[i-15],P[i-216])+i;
+			P[i] = f(P[i-2],P[i-7],P[i-15],P[i-16])+i;
 		for (i = 0; i < 16; i++)
 			P[i] = P[i+512];
 		for (i = 16; i < 1024; i++)
@@ -84,6 +182,14 @@ public class HC256 {
 		tem2 = ((v) ^ (c)) & 0x3ff; 
 		(u) += (b)+(tem0^tem1)+P[(int)tem2]; //please check if type casting ???
 		}
+	public short u8(short x) {
+		return (short) ((x | 0xff00)^0xff00);
+	}
+	public long u32(long x) {
+		return (long) ((x|0xffff0000)^0xffff0000);
+	}
+
 	
+
 	
 }
