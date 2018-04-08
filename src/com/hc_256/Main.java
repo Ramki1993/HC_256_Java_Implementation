@@ -18,7 +18,7 @@ public class Main {
 		HC256 cipher = new HC256();
 		cipher.initialization(key, iv);
 		for(i = 0; i < 16; i++) {
-			data[(int)i] = 0;
+			data[(int)i] = i;
 		}
 		long encData[] = new long[16]; 
 		encData = cipher.encrypt(data);
@@ -26,6 +26,18 @@ public class Main {
 			System.out.print(Long.toHexString(cipher.u32(encData[(int) i])));
 			System.out.println("");
 		}
+		cipher.initialization(key, iv);
+		long decData[] = new long[16];
+		decData = cipher.encrypt(encData);
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		for(i = 0; i < 16; i++) {
+			System.out.print(Long.toHexString(cipher.u32(decData[(int) i])));
+			System.out.println("");
+		}
+		
+
 		long start = System.nanoTime();
 		for(i = 0; i < 0x4000000; i++) {
 			cipher.encrypt(data);	
