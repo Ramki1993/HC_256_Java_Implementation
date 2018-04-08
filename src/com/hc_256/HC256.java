@@ -53,7 +53,7 @@ public class HC256 {
 		long tem0, tem1, tem2, tem3 = 0;
 		tem0 = rotr(v,23);
 		tem1 = rotr(c,10);
-		tem2 = ((v ^ c) & 0x3ff) & 0xffffffff;//0xffffffff should give us the u32 value;
+		tem2 = ((v ^ c) & 0x3ff);
 
 		u += b + (tem0^tem1) + P[(int)tem2];
 		a = u;
