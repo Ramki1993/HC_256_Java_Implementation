@@ -42,10 +42,10 @@ public class HC256 {
 		tem1 = rotr(c,10);
 		tem2 = ((v ^ c) & 0x3ff) ;
 
-		u += b + (tem0^tem1) + Q[(int)tem2];
-		a = u;
+		P[(int)u] += b + (tem0^tem1) + Q[(int)tem2];
+		X[(int)a] = P[(int)u];
 		h1(d,tem3);
-		m ^= tem3 ^ u;
+		m ^= tem3 ^ P[(int)u];
 		return m;
 		
 	}
@@ -55,10 +55,10 @@ public class HC256 {
 		tem1 = rotr(c,10);
 		tem2 = ((v ^ c) & 0x3ff);
 
-		u += b + (tem0^tem1) + P[(int)tem2];
-		a = u;
+		Q[(int)u] += b + (tem0^tem1) + P[(int)tem2];
+		Y[(int)a] = Q[(int)u];
 		h2(d,tem3);
-		m ^= tem3 ^ u;
+		m ^= tem3 ^ Q[(int)u];
 		return m;
 		
 	}
@@ -68,41 +68,41 @@ public class HC256 {
 		dd = ((cc+16)&0x3ff);
 		if (counter2048 < 1024) {
 			counter2048 = (counter2048 + 16) & 0x7ff; 
-			data[0] = step_A(P[(int)(cc)], P[(int)(cc+1)], X[0], X[6], X[13],X[4], data[0]);
-			data[1] = step_A(P[(int)(cc+1)], P[(int)(cc+2)], X[1], X[7], X[14],X[5], data[1]);
-			data[2] = step_A(P[(int)(cc+2)], P[(int)(cc+3)], X[2], X[8], X[15],X[6], data[2]);
-			data[3] = step_A(P[(int)(cc+3)], P[(int)(cc+4)], X[3], X[9], X[0], X[7], data[3]); 
-			data[4] = step_A(P[(int)(cc+4)], P[(int)(cc+5)], X[4], X[10],X[1], X[8], data[4]);
-			data[5] = step_A(P[(int)(cc+5)], P[(int)(cc+6)], X[5], X[11],X[2], X[9], data[5]);
-			data[6] = step_A(P[(int)(cc+6)], P[(int)(cc+7)], X[6], X[12],X[3], X[10],data[6]); 
-			data[7] = step_A(P[(int)(cc+7)], P[(int)(cc+8)], X[7], X[13],X[4], X[11],data[7]); 
-			data[8] = step_A(P[(int)(cc+8)], P[(int)(cc+9)], X[8], X[14],X[5], X[12],data[8]); 
-			data[9] = step_A(P[(int)(cc+9)], P[(int)(cc+10)],X[9], X[15],X[6], X[13],data[9]); 
-			data[10] = step_A(P[(int)(cc+10)],P[(int)(cc+11)],X[10],X[0], X[7], X[14],data[10]);
-			data[11] = step_A(P[(int)(cc+11)],P[(int)(cc+12)],X[11],X[1], X[8], X[15],data[11]);
-			data[12] = step_A(P[(int)(cc+12)],P[(int)(cc+13)],X[12],X[2], X[9], X[0], data[12]); 
-			data[13] = step_A(P[(int)(cc+13)],P[(int)(cc+14)],X[13],X[3], X[10],X[1], data[13]);
-			data[14] = step_A(P[(int)(cc+14)],P[(int)(cc+15)],X[14],X[4], X[11],X[2], data[14]); 
-			data[15] = step_A(P[(int)(cc+15)],P[(int)(dd)], X[15],X[5], X[12],X[3], data[15]);
+			data[0] = step_A((int)(cc), P[(int)(cc+1)], 0, X[6], X[13],X[4], data[0]);
+			data[1] = step_A((int)(cc+1), P[(int)(cc+2)], 1, X[7], X[14],X[5], data[1]);
+			data[2] = step_A((int)(cc+2), P[(int)(cc+3)], 2, X[8], X[15],X[6], data[2]);
+			data[3] = step_A((int)(cc+3), P[(int)(cc+4)], 3, X[9], X[0], X[7], data[3]); 
+			data[4] = step_A((int)(cc+4), P[(int)(cc+5)], 4, X[10],X[1], X[8], data[4]);
+			data[5] = step_A((int)(cc+5), P[(int)(cc+6)], 5, X[11],X[2], X[9], data[5]);
+			data[6] = step_A((int)(cc+6), P[(int)(cc+7)], 6, X[12],X[3], X[10],data[6]); 
+			data[7] = step_A((int)(cc+7), P[(int)(cc+8)], 7, X[13],X[4], X[11],data[7]); 
+			data[8] = step_A((int)(cc+8), P[(int)(cc+9)], 8, X[14],X[5], X[12],data[8]); 
+			data[9] = step_A((int)(cc+9), P[(int)(cc+10)],9, X[15],X[6], X[13],data[9]); 
+			data[10] = step_A((int)(cc+10),P[(int)(cc+11)],10,X[0], X[7], X[14],data[10]);
+			data[11] = step_A((int)(cc+11),P[(int)(cc+12)],11,X[1], X[8], X[15],data[11]);
+			data[12] = step_A((int)(cc+12),P[(int)(cc+13)],12,X[2], X[9], X[0], data[12]); 
+			data[13] = step_A((int)(cc+13),P[(int)(cc+14)],13,X[3], X[10],X[1], data[13]);
+			data[14] = step_A((int)(cc+14),P[(int)(cc+15)],14,X[4], X[11],X[2], data[14]); 
+			data[15] = step_A((int)(cc+15),P[(int)(dd)], 15,X[5], X[12],X[3], data[15]);
 		}
 		else {
 			counter2048 = (counter2048 + 16) & 0x7ff; 
-			data[0] = step_B(Q[(int)(cc)], Q[(int)(cc+1)], Y[0], Y[6], Y[13],Y[4], data[0]); 
-			data[1] = step_B(Q[(int)(cc+1)], Q[(int)(cc+2)], Y[1], Y[7], Y[14],Y[5], data[1]); 
-			data[2] = step_B(Q[(int)(cc+2)], Q[(int)(cc+3)], Y[2], Y[8], Y[15],Y[6], data[2]); 
-			data[3] = step_B(Q[(int)(cc+3)], Q[(int)(cc+4)], Y[3], Y[9], Y[0], Y[7], data[3]);
-			data[4] = step_B(Q[(int)(cc+4)], Q[(int)(cc+5)], Y[4], Y[10],Y[1], Y[8], data[4]); 
-			data[5] = step_B(Q[(int)(cc+5)], Q[(int)(cc+6)], Y[5], Y[11],Y[2], Y[9], data[5]);
-			data[6] = step_B(Q[(int)(cc+6)], Q[(int)(cc+7)], Y[6], Y[12],Y[3], Y[10],data[6]);
-			data[7] = step_B(Q[(int)(cc+7)], Q[(int)(cc+8)], Y[7], Y[13],Y[4], Y[11],data[7]); 
-			data[8] = step_B(Q[(int)(cc+8)], Q[(int)(cc+9)], Y[8], Y[14],Y[5], Y[12],data[8]); 
-			data[9] = step_B(Q[(int)(cc+9)], Q[(int)(cc+10)],Y[9], Y[15],Y[6], Y[13],data[9]); 
-			data[10] = step_B(Q[(int)(cc+10)],Q[(int)(cc+11)],Y[10],Y[0], Y[7], Y[14],data[10]); 
-			data[11] = step_B(Q[(int)(cc+11)],Q[(int)(cc+12)],Y[11],Y[1], Y[8], Y[15],data[11]); 
-			data[12] = step_B(Q[(int)(cc+12)],Q[(int)(cc+13)],Y[12],Y[2], Y[9], Y[0], data[12]);
-			data[13] = step_B(Q[(int)(cc+13)],Q[(int)(cc+14)],Y[13],Y[3], Y[10],Y[1], data[13]); 
-			data[14] = step_B(Q[(int)(cc+14)],Q[(int)(cc+15)],Y[14],Y[4], Y[11],Y[2], data[14]);
-			data[15] = step_B(Q[(int)(cc+15)],Q[(int)(dd)], Y[15],Y[5], Y[12],Y[3], data[15]);
+			data[0] = step_B((int)(cc), Q[(int)(cc+1)], 0, Y[6], Y[13],Y[4], data[0]); 
+			data[1] = step_B((int)(cc+1), Q[(int)(cc+2)], 1, Y[7], Y[14],Y[5], data[1]); 
+			data[2] = step_B((int)(cc+2), Q[(int)(cc+3)], 2, Y[8], Y[15],Y[6], data[2]); 
+			data[3] = step_B((int)(cc+3), Q[(int)(cc+4)], 3, Y[9], Y[0], Y[7], data[3]);
+			data[4] = step_B((int)(cc+4), Q[(int)(cc+5)], 4, Y[10],Y[1], Y[8], data[4]); 
+			data[5] = step_B((int)(cc+5), Q[(int)(cc+6)], 5, Y[11],Y[2], Y[9], data[5]);
+			data[6] = step_B((int)(cc+6), Q[(int)(cc+7)], 6, Y[12],Y[3], Y[10],data[6]);
+			data[7] = step_B((int)(cc+7), Q[(int)(cc+8)], 7, Y[13],Y[4], Y[11],data[7]); 
+			data[8] = step_B((int)(cc+8), Q[(int)(cc+9)], 8, Y[14],Y[5], Y[12],data[8]); 
+			data[9] = step_B((int)(cc+9), Q[(int)(cc+10)],9, Y[15],Y[6], Y[13],data[9]); 
+			data[10] = step_B((int)(cc+10),Q[(int)(cc+11)],10,Y[0], Y[7], Y[14],data[10]); 
+			data[11] = step_B((int)(cc+11),Q[(int)(cc+12)],11,Y[1], Y[8], Y[15],data[11]); 
+			data[12] = step_B((int)(cc+12),Q[(int)(cc+13)],12,Y[2], Y[9], Y[0], data[12]);
+			data[13] = step_B((int)(cc+13),Q[(int)(cc+14)],13,Y[3], Y[10],Y[1], data[13]); 
+			data[14] = step_B((int)(cc+14),Q[(int)(cc+15)],14,Y[4], Y[11],Y[2], data[14]);
+			data[15] = step_B((int)(cc+15),Q[(int)(dd)], 15,Y[5], Y[12],Y[3], data[15]);
 		
 		}
 		return data;
@@ -117,12 +117,18 @@ public class HC256 {
 		for(i = 0; i < 8; i++) P[i] = key[i];
 		for(i = 8; i < 16; i++) P[i] = iv[i-8];
 		
-		for(i=16; i < 528; i++)
+		for(i=16; i < 528; i++) {
 			P[i] = f(P[i-2],P[i-7],P[i-15],P[i-16])+i;
-		for (i = 0; i < 16; i++)
+			
+		}
+		for (i = 0; i < 16; i++) {
 			P[i] = P[i+512];
-		for (i = 16; i < 1024; i++)
+			
+		}
+		for (i = 16; i < 1024; i++) {
 			P[i] = f(P[i-2],P[i-7],P[i-15],P[i-16])+512+i;
+			
+		}
 		for (i = 0; i < 16; i++)
 			Q[i] = P[1024-16+i];
 		for (i = 16; i < 32; i++)
@@ -145,11 +151,25 @@ public class HC256 {
 				feedback_2(Q[j],Q[j+1],Q[j-10],Q[j-3]);
 				feedback_2(Q[1023],Q[0],Q[1013],Q[1020]);
 		}
+		for(i = 0; i < 4; i++) {
+		System.out.println(Long.toHexString(u32(P[i])));
+		}
+		for(i = 0; i < 4; i++) {
+		System.out.println(Long.toHexString(u32(Q[i])));
+		}
+
+
 		
 		//initialize counter2048, and tables X and Y
 		counter2048 = 0;
-		for (i = 0; i < 16; i++) X[i] = P[1008+i];
-		for (i = 0; i < 16; i++) Y[i] = Q[1008+i];
+		for (i = 0; i < 16; i++) {
+			X[i] = P[1008+i];
+
+		}	
+		for (i = 0; i < 16; i++) {
+			Y[i] = Q[1008+i];
+
+		}
 		
 	}
 	

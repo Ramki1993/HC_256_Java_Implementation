@@ -16,10 +16,18 @@ public class Main {
 			iv[(int)i]=0;
 		}
 		HC256 cipher = new HC256();
+		System.out.println("HC-256");
 		cipher.initialization(key, iv);
+		String test = "Eric Ramki infsc";
 		for(i = 0; i < 16; i++) {
-			data[(int)i] = i;
+			data[(int)i] = test.charAt((int) i);
 		}
+
+		for(i = 0; i < 16; i++) {
+			System.out.println(Long.toHexString(cipher.u32(data[(int) i])));
+
+		}
+		System.out.println("");
 		long encData[] = new long[16]; 
 		encData = cipher.encrypt(data);
 		for(i = 0; i < 16; i++) {
@@ -33,7 +41,7 @@ public class Main {
 		System.out.println("");
 		System.out.println("");
 		for(i = 0; i < 16; i++) {
-			System.out.print(Long.toHexString(cipher.u32(decData[(int) i])));
+			System.out.print((char)cipher.u32(decData[(int) i]));
 			System.out.println("");
 		}
 		
